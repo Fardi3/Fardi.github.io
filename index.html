@@ -1,10 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Menim Saytim</title>
+  <title>Fərdinin Saytı</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+    }
+
+    header {
+      background: #1e293b;
+      padding: 20 px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #38bdf8;
+    }
+
+    .container {
+      padding: 40 px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10 px 20 px;
+      background: #38bdf8;
+      border: none;
+      color: black;
+      font-size: 16 px;
+      cursor: pointer;
+      border-radius: 8 px;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Salam! Mənim ilk saytım</h1>
-  <p>Bu saytı özüm yığdım 🚀</p>
+
+  <header>
+    <h1>Fərdinin Saytı 🚀</h1>
+    <p>Gələcəyin developeri</p>
+  </header>
+
+  <div class="container">
+    <h2>Haqqımda</h2>
+    <p>Mən web development öyrənirəm və öz saytımı qururam.</p>
+
+    <button onclick="showMessage()">Mənə klik et</button>
+  </div>
+
+  <script>
+    Function showMessage() {
+      alert("Salam! Bu artıq JavaScript-dir 😎");
+    }
+  </script>
+
 </body>
 </html>
