@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Fərdinin Saytı</title>
+
   <style>
     body {
       margin: 0;
@@ -10,29 +11,53 @@
       color: white;
     }
 
-    header {
-      background: #1e293b;
-      padding: 20 px;
+    /* NAVBAR */
+    nav {
+      background: #020617;
+      padding: 15 px;
       text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15 px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #38bdf8;
+    }
+
+    header {
+      text-align: center;
+      padding: 60 px 20 px;
+      background: #1e293b;
     }
 
     h1 {
       color: #38bdf8;
     }
 
-    .container {
-      padding: 40 px;
+    section {
+      padding: 50 px 20 px;
       text-align: center;
+    }
+
+    .box {
+      background: #1e293b;
+      margin: 20 px auto;
+      padding: 20 px;
+      max-width: 400 px;
+      border-radius: 12 px;
     }
 
     button {
       padding: 10 px 20 px;
       background: #38bdf8;
       border: none;
-      color: black;
-      font-size: 16 px;
-      cursor: pointer;
       border-radius: 8 px;
+      cursor: pointer;
     }
 
     button:hover {
@@ -43,21 +68,42 @@
 
 <body>
 
-  <header>
+  <!-- MENU -->
+  <nav>
+    <a href="#home">Ana səhifə</a>
+    <a href="#about">Haqqımda</a>
+    <a href="#contact">Əlaqə</a>
+  </nav>
+
+  <!-- HEADER -->
+  <header id="home">
     <h1>Fərdinin Saytı 🚀</h1>
-    <p>Gələcəyin developeri</p>
+    <p>Artıq Level 2-dəyəm 😎</p>
   </header>
 
-  <div class="container">
+  <!-- ABOUT -->
+  <section id="about">
     <h2>Haqqımda</h2>
-    <p>Mən web development öyrənirəm və öz saytımı qururam.</p>
 
-    <button onclick="showMessage()">Mənə klik et</button>
-  </div>
+    <div class="box">
+      <p>Mən web development öyrənirəm və öz saytımı qururam.</p>
+      <button onclick="showMessage()">Klik et</button>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2>Əlaqə</h2>
+
+    <div class="box">
+      <p>Email: example@gmail.com</p>
+      <p>Instagram: @ferdi</p>
+    </div>
+  </section>
 
   <script>
     Function showMessage() {
-      alert("Salam! Bu artıq JavaScript-dir 😎");
+      alert("Level 2 tamamlandı 🔥");
     }
   </script>
 
