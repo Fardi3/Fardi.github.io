@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Test Saytı</title>
-
+  <title>Restoran Saytı</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       margin: 0;
       font-family: Arial;
-      background: #0f172a;
+      background: #111;
       color: white;
-      transition: 0.3 s;
-    }
-
-    .light-mode {
-      background: white;
-      color: black;
     }
 
     nav {
-      background: #020617;
+      background: black;
       padding: 15 px;
       text-align: center;
     }
@@ -33,9 +26,14 @@
     }
 
     header {
+      background: url('https://picsum.photos/1200/500') center/cover;
+      padding: 100 px 20 px;
       text-align: center;
-      padding: 50 px 20 px;
-      background: #1e293b;
+    }
+
+    header h1 {
+      font-size: 40 px;
+      color: gold;
     }
 
     section {
@@ -43,7 +41,7 @@
       text-align: center;
     }
 
-    .grid {
+    .menu {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -51,9 +49,9 @@
     }
 
     .card {
-      background: #1e293b;
-      padding: 20 px;
-      border-radius: 12 px;
+      background: #222;
+      padding: 15 px;
+      border-radius: 10 px;
       width: 250 px;
     }
 
@@ -63,19 +61,19 @@
     }
 
     button {
-      padding: 10 px 15 px;
-      margin-top: 10 px;
+      background: green;
+      color: white;
       border: none;
+      padding: 12 px 20 px;
       border-radius: 8 px;
       cursor: pointer;
-      background: #38bdf8;
+      margin-top: 15 px;
     }
 
-    Media (max-width: 600 px) {
-      .grid {
-        flex-direction: column;
-        align-items: center;
-      }
+    footer {
+      background: black;
+      padding: 20 px;
+      text-align: center;
     }
   </style>
 </head>
@@ -85,55 +83,65 @@
   <!-- MENU -->
   <nav>
     <a href="#home">Ana səhifə</a>
-    <a href="#about">Tezlikle</a>
-    <a href="#portfolio">Yeniliy olacaq</a>
-    <a href="#contact">Əlaqə 2 50 40</a>
-    <button onclick="toggleMode()">🌙</button>
+    <a href="#menu">Menyu</a>
+    <a href="#about">Haqqımızda</a>
+    <a href="#contact">Əlaqə</a>
   </nav>
 
-  <!-- HEADER -->
+  <!-- HERO -->
   <header id="home">
-    <h1>Test ucun sayt 🚀</h1>
-    <p> Salam Aleykum 😎</p>
+    <h1>Delicious Food 🍔</h1>
+    <p>Ən dadlı yeməklər burada</p>
   </header>
+
+  <!-- MENU SECTION -->
+  <section id="menu">
+    <h2>Menyu</h2>
+
+    <div class="menu">
+      <div class="card">
+        <img src="https://picsum.photos/300?food1">
+        <h3>Burger</h3>
+        <p>10 AZN</p>
+      </div>
+
+      <div class="card">
+        <img src="https://picsum.photos/300?food2">
+        <h3>Pitsa</h3>
+        <p>12 AZN</p>
+      </div>
+
+      <div class="card">
+        <img src="https://picsum.photos/300?food3">
+        <h3>Steyk</h3>
+        <p>18 AZN</p>
+      </div>
+    </div>
+
+  </section>
 
   <!-- ABOUT -->
   <section id="about">
-    <h2>Haqqımda</h2>
-    <p>Mən bir gun saytları professional səviyyədə quracam.</p>
-  </section>
-
-  <!-- PORTFOLIO -->
-  <section id="portfolio">
-    <h2>Layihələrim</h2>
-
-    <div class="grid">
-      <div class="card">
-        <img src="https://picsum.photos/300?1">
-        <p>Layihə 1</p>
-      </div>
-
-      <div class="card">
-        <img src="https://picsum.photos/300?2">
-        <p>Layihə 2</p>
-      </div>
-
-      <div class="card">
-        <img src="https://picsum.photos/300?3">
-        <p>Layihə 3</p>
-      </div>
-    </div>
+    <h2>Haqqımızda</h2>
+    <p>Biz müştərilərimizə ən keyfiyyətli və dadlı yeməkləri təqdim edirik.</p>
   </section>
 
   <!-- CONTACT -->
   <section id="contact">
     <h2>Əlaqə</h2>
-    <p>Email: example@gmail.com</p>
+    <p>📍 Bakı</p>
+    <p>📞 +994 50 000 00 00</p>
+
+    <button onclick="orderNow()">WhatsApp ilə sifariş et</button>
   </section>
 
+  <footer>
+    <p>© 2026 Restoran</p>
+  </footer>
+
   <script>
-    Function toggleMode() {
-      document.body.classList.toggle("light-mode");
+    Function orderNow() {
+      window.open("https://wa.me/994500000000", "_blank");
     }
   </script>
 
