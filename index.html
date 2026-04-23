@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="az">
 <head>
-  <title>Premium Restoran</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restoran Menyu</title>
 
   <style>
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: Arial;
       background: #0f172a;
       color: white;
     }
@@ -18,136 +19,143 @@
       text-align: center;
     }
 
-    nav a {
-      color: white;
-      margin: 0 10 px;
-      text-decoration: none;
-      font-weight: bold;
+    input {
+      padding: 10 px;
+      width: 80 %;
+      margin: 10 px;
+      border-radius: 6 px;
+      border: none;
     }
 
-    header {
-      background: url('https://picsum.photos/1200/500?food') center/cover;
-      padding: 120 px 20 px;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 45 px;
-      color: gold;
-    }
-
-    section {
-      padding: 50 px 20 px;
-      text-align: center;
+    .filters button {
+      margin: 5 px;
+      padding: 8 px 12 px;
+      cursor: pointer;
     }
 
     .menu {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20 px;
+      gap: 15 px;
+      padding-bottom: 90 px;
     }
 
     .card {
       background: #1e293b;
       padding: 15 px;
-      border-radius: 12 px;
-      width: 250 px;
-    }
-
-    img {
-      width: 100 %;
+      width: 200 px;
       border-radius: 10 px;
-    }
-
-    .review {
-      background: #1e293b;
-      margin: 15 px auto;
-      padding: 15 px;
-      max-width: 400 px;
-      border-radius: 10 px;
+      text-align: center;
     }
 
     button {
-      background: green;
-      color: white;
-      padding: 12 px 20 px;
-      border: none;
-      border-radius: 8 px;
+      padding: 8 px 12 px;
+      margin-top: 10 px;
       cursor: pointer;
+      border: none;
+      border-radius: 6 px;
     }
 
-    iframe {
+    #cart {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       width: 100 %;
-      height: 300 px;
-      border: none;
-      margin-top: 20 px;
+      background: black;
+      padding: 10 px;
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
 
-<nav>
-  <a href="#home">Ana səhifə</a>
-  <a href="#menu">Menyu</a>
-  <a href="#reviews">Rəylər</a>
-  <a href="#contact">Əlaqə</a>
-</nav>
+  <nav>
+    <h2>🍔 Menyu</h2>
+  </nav>
 
-<header id="home">
-  <h1>Premium Restoran 🍔</h1>
-  <p>Dadın zirvəsi</p>
-</header>
+  <input type="text" id="search" placeholder="Axtar..." onkeyup="renderMenu()" />
 
-<section id="menu">
-  <h2>Menyu</h2>
-
-  <h3>Burgerlər</h3>
-  <div class="menu">
-    <div class="card">
-      <img src="https://picsum.photos/300?burger">
-      <p>Classic Burger - 10 AZN</p>
-      <button onclick="order('Burger')">Sifariş et</button>
-    </div>
+  <div class="filters">
+    <button onclick="setCategory('all')">Hamısı</button>
+    <button onclick="setCategory('burger')">Burger</button>
+    <button onclick="setCategory('pizza')">Pizza</button>
   </div>
 
-  <h3>Pitsalar</h3>
-  <div class="menu">
-    <div class="card">
-      <img src="https://picsum.photos/300?pizza">
-      <p>Pepperoni - 12 AZN</p>
-      <button onclick="order('Pizza')">Sifariş et</button>
-    </div>
+  <div class="menu" id="menu"></div>
+
+  <div id="cart">
+    🛒 Səbət: <span id="cartItems">0</span> |
+    💰 Total: <span id="total">0</span> AZN
+    <button onclick="sendOrder()">Sifariş et</button>
   </div>
 
-</section>
+  <script>
+    Let foods = [
+      { name: "Burger", price: 10, category: "burger" },
+      { name: "Cheese Burger", price: 12, category: "burger" },
+      { name: "Pizza", price: 15, category: "pizza" },
+      { name: "Pepperoni", price: 18, category: "pizza" }
+    ];
 
-<section id="reviews">
-  <h2>Müştəri rəyləri</h2>
+    Let cart = [];
+    Let category = "all";
 
-  <div class="review">⭐️⭐️⭐️⭐️⭐️ Çox dadlı idi!</div>
-  <div class="review">⭐️⭐️⭐️⭐️ Super xidmət</div>
-</section>
+    Function setCategory(cat) {
+      category = cat;
+      renderMenu();
+    }
 
-<section id="contact">
-  <h2>Əlaqə</h2>
-  <p>📞 +994 50 000 00 00</p>
+    Function renderMenu() {
+      Let search = document.getElementById("search").value.toLowerCase();
+      Let menu = document.getElementById("menu");
+      menu.innerHTML = "";
 
-  <button onclick="order('Salam, sifariş vermək istəyirəm')">
-    WhatsApp ilə sifariş
-  </button>
+      foods
+        .filter(f. =>
+          (category === "all" || f.category === category) &&
+          f.name.toLowerCase().includes(search)
+        )
+        .forEach(f. => {
+          menu.innerHTML += `
+            <div class="card">
+              <h3>${f.name}</h3>
+              <p>${f.price} AZN</p>
+              <button onclick="addToCart('${f.name}', ${f.price})">Əlavə et</button>
+            </div>
+          `;
+        });
+    }
 
-  <!-- GOOGLE MAP -->
-  <iframe src="https://maps.google.com/maps?q=baku&output=embed"></iframe>
-</section>
+    Function addToCart(name, price) {
+      cart.push({ name, price });
+      updateCart();
+    }
 
-<script>
-Function order(item) {
-  Let msg = "Salam, " + item + " sifariş etmək istəyirəm";
-  window.open("https://wa.me/994500000000?text=" + encodeURIComponent(msg));
-}
-</script>
+    Function updateCart() {
+      document.getElementById("cartItems").innerText = cart.length;
+      Let total = cart.reduce((sum., i) => sum + i.price, 0);
+      document.getElementById("total").innerText = total;
+    }
+
+    Function sendOrder() {
+      If (cart.length === 0) {
+        alert("Səbət boşdur!");
+        Return;
+      }
+
+      Let text = "Salam, sifariş:\n";
+      cart.forEach(i.=> text += "- " + i.name + "\n");
+      Let total = cart.reduce((s., i) => s + i.price, 0);
+      text += "Total: " + total + " AZN";
+
+      window.open("https://wa.me/994500000000?text=" + encodeURIComponent(text), "_blank");
+    }
+
+    renderMenu();
+  </script>
 
 </body>
 </html>
