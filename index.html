@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Crypto Pro Dashboard</title>
+  <title>Ultimate Crypto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -12,7 +12,7 @@
 
     .grid {
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
       gap:15px;
     }
 
@@ -21,14 +21,13 @@
       padding:15px;
       border-radius:12px;
       text-align:center;
-      transition:0.3s;
     }
 
     .up { color:#22c55e; }
     .down { color:#ef4444; }
 
     button {
-      margin-top:10px;
+      margin:5px;
       padding:8px 12px;
       border:none;
       border-radius:8px;
@@ -38,27 +37,37 @@
     .buy { background:green; color:white; }
     .sell { background:red; color:white; }
 
+    #chart {
+      margin-top:20px;
+    }
   </style>
 </head>
 
 <body>
 
-<nav>💰 Crypto PRO</nav>
+<nav>🚀 Ultimate Crypto Dashboard</nav>
 
 <div class="container">
 
   <h2>📊 Market</h2>
   <div class="grid" id="market"></div>
 
-  <h2>💼 Wallet</h2>
-  <div class="card">
-    Balance: <span id="balance">1000</span> USDT
+  <h2>📈 Chart</h2>
+  <div id="chart">
+    <iframe 
+      src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=30&theme=dark"
+      width="100%" height="400">
+    </iframe>
   </div>
+
+  <h2>💼 Portfolio</h2>
+  <div class="card" id="portfolio"></div>
 
 </div>
 
 <script>
 let balance = 1000;
+let portfolio = {};
 let lastPrices = {};
 
 const coins = [
@@ -78,17 +87,10 @@ async function loadPrices(){
     let price = data[c.id].usd;
     let old = lastPrices[c.id];
 
-    let trend = "";
-    let className = "";
-
+    let trend="", cls="";
     if(old){
-      if(price > old){
-        trend = "▲";
-        className = "up";
-      } else if(price < old){
-        trend = "▼";
-        className = "down";
-      }
+      if(price>old){ trend="▲"; cls="up"; }
+      else if(price<old){ trend="▼"; cls="down"; }
     }
 
     lastPrices[c.id] = price;
@@ -96,9 +98,9 @@ async function loadPrices(){
     market.innerHTML += `
       <div class="card">
         <h3>${c.name}</h3>
-        <p class="${className}">$${price} ${trend}</p>
-        <button class="buy" onclick="buy('${c.name}', ${price})">Al</button>
-        <button class="sell" onclick="sell('${c.name}', ${price})">Sat</button>
+        <p class="${cls}">$${price} ${trend}</p>
+        <button class="buy" onclick="buy('${c.name}',${price})">Al</button>
+        <button class="sell" onclick="sell('${c.name}',${price})">Sat</button>
       </div>
     `;
   });
@@ -107,25 +109,34 @@ async function loadPrices(){
 function buy(name, price){
   if(balance >= price){
     balance -= price;
-    alert(name + " alındı");
+    if(!portfolio[name]) portfolio[name]=0;
+    portfolio[name]++;
   } else {
     alert("Balans azdır");
   }
-  updateBalance();
+  updatePortfolio();
 }
 
 function sell(name, price){
-  balance += price;
-  alert(name + " satıldı");
-  updateBalance();
+  if(portfolio[name]){
+    portfolio[name]--;
+    balance += price;
+    if(portfolio[name]<=0) delete portfolio[name];
+  }
+  updatePortfolio();
 }
 
-function updateBalance(){
-  document.getElementById("balance").innerText = balance.toFixed(2);
+function updatePortfolio(){
+  let html = "Balance: " + balance.toFixed(2) + " USDT<br><br>";
+  for(let c in portfolio){
+    html += c + ": " + portfolio[c] + "<br>";
+  }
+  document.getElementById("portfolio").innerHTML = html;
 }
 
 loadPrices();
 setInterval(loadPrices, 5000);
+updatePortfolio();
 </script>
 
 </body>
