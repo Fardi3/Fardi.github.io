@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Crypto Dashboard</title>
+  <title>Crypto Pro Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -10,7 +10,7 @@
 
     .container { padding:20px; }
 
-    .cards {
+    .grid {
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
       gap:15px;
@@ -21,11 +21,15 @@
       padding:15px;
       border-radius:12px;
       text-align:center;
+      transition:0.3s;
     }
 
+    .up { color:#22c55e; }
+    .down { color:#ef4444; }
+
     button {
-      padding:10px;
       margin-top:10px;
+      padding:8px 12px;
       border:none;
       border-radius:8px;
       cursor:pointer;
@@ -39,12 +43,12 @@
 
 <body>
 
-<nav>💰 Crypto Dashboard</nav>
+<nav>💰 Crypto PRO</nav>
 
 <div class="container">
 
-  <h2>📊 Bazar</h2>
-  <div class="cards" id="market"></div>
+  <h2>📊 Market</h2>
+  <div class="grid" id="market"></div>
 
   <h2>💼 Wallet</h2>
   <div class="card">
@@ -55,27 +59,44 @@
 
 <script>
 let balance = 1000;
+let lastPrices = {};
+
+const coins = [
+  {name:"Bitcoin", id:"bitcoin"},
+  {name:"Ethereum", id:"ethereum"},
+  {name:"Solana", id:"solana"}
+];
 
 async function loadPrices(){
   let res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd");
   let data = await res.json();
 
-  let coins = [
-    {name:"Bitcoin", key:"bitcoin"},
-    {name:"Ethereum", key:"ethereum"},
-    {name:"Solana", key:"solana"}
-  ];
-
   let market = document.getElementById("market");
   market.innerHTML = "";
 
   coins.forEach(c => {
-    let price = data[c.key].usd;
+    let price = data[c.id].usd;
+    let old = lastPrices[c.id];
+
+    let trend = "";
+    let className = "";
+
+    if(old){
+      if(price > old){
+        trend = "▲";
+        className = "up";
+      } else if(price < old){
+        trend = "▼";
+        className = "down";
+      }
+    }
+
+    lastPrices[c.id] = price;
 
     market.innerHTML += `
       <div class="card">
         <h3>${c.name}</h3>
-        <p>$${price}</p>
+        <p class="${className}">$${price} ${trend}</p>
         <button class="buy" onclick="buy('${c.name}', ${price})">Al</button>
         <button class="sell" onclick="sell('${c.name}', ${price})">Sat</button>
       </div>
@@ -104,6 +125,7 @@ function updateBalance(){
 }
 
 loadPrices();
+setInterval(loadPrices, 5000);
 </script>
 
 </body>
