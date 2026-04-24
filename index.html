@@ -1,37 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Premium Restaurant</title>
+  <title>Crypto Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body { margin:0; font-family:Arial; background:#0f172a; color:white; }
-
     nav { background:#020617; padding:15px; text-align:center; font-size:20px; }
 
-    input {
-      width:90%;
-      padding:12px;
-      margin:15px auto;
-      display:block;
-      border-radius:8px;
-      border:none;
-    }
+    .container { padding:20px; }
 
-    .filters { text-align:center; }
-    .filters button {
-      margin:5px;
-      padding:10px 15px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-    }
-
-    .menu {
+    .cards {
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-      gap:20px;
-      padding:20px;
+      gap:15px;
     }
 
     .card {
@@ -39,147 +21,89 @@
       padding:15px;
       border-radius:12px;
       text-align:center;
-      transition:0.3s;
     }
 
-    .card:hover {
-      transform:scale(1.05);
-    }
-
-    img {
-      width:100%;
-      border-radius:10px;
-    }
-
-    .qty {
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .qty button {
-      padding:5px 10px;
-    }
-
-    #cart {
-      position:fixed;
-      bottom:0;
-      width:100%;
-      background:black;
+    button {
       padding:10px;
-      text-align:center;
+      margin-top:10px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
     }
 
-    #cartList {
-      max-height:100px;
-      overflow:auto;
-      font-size:14px;
-    }
+    .buy { background:green; color:white; }
+    .sell { background:red; color:white; }
 
   </style>
 </head>
 
 <body>
 
-<nav>🍔 Premium Menu</nav>
+<nav>💰 Crypto Dashboard</nav>
 
-<input type="text" id="search" placeholder="Axtar..." onkeyup="renderMenu()">
+<div class="container">
 
-<div class="filters">
-  <button onclick="setCategory('all')">Hamısı</button>
-  <button onclick="setCategory('burger')">Burger</button>
-  <button onclick="setCategory('pizza')">Pizza</button>
-</div>
+  <h2>📊 Bazar</h2>
+  <div class="cards" id="market"></div>
 
-<div class="menu" id="menu"></div>
+  <h2>💼 Wallet</h2>
+  <div class="card">
+    Balance: <span id="balance">1000</span> USDT
+  </div>
 
-<div id="cart">
-  <div id="cartList"></div>
-  🛒 <span id="count">0</span> | 💰 <span id="total">0</span> AZN
-  <br>
-  <button onclick="sendOrder()">WhatsApp sifariş</button>
 </div>
 
 <script>
-let foods = [
-  {name:"Burger", price:10, category:"burger", img:"https://picsum.photos/200?1"},
-  {name:"Cheese Burger", price:12, category:"burger", img:"https://picsum.photos/200?2"},
-  {name:"Pizza", price:15, category:"pizza", img:"https://picsum.photos/200?3"},
-  {name:"Pepperoni", price:18, category:"pizza", img:"https://picsum.photos/200?4"}
-];
+let balance = 1000;
 
-let cart = {};
-let category = "all";
+async function loadPrices(){
+  let res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd");
+  let data = await res.json();
 
-function setCategory(c){ category=c; renderMenu(); }
+  let coins = [
+    {name:"Bitcoin", key:"bitcoin"},
+    {name:"Ethereum", key:"ethereum"},
+    {name:"Solana", key:"solana"}
+  ];
 
-function renderMenu(){
-  let search = document.getElementById("search").value.toLowerCase();
-  let menu = document.getElementById("menu");
-  menu.innerHTML = "";
+  let market = document.getElementById("market");
+  market.innerHTML = "";
 
-  foods.filter(f =>
-    (category=="all" || f.category==category) &&
-    f.name.toLowerCase().includes(search)
-  ).forEach(f => {
-    menu.innerHTML += `
+  coins.forEach(c => {
+    let price = data[c.key].usd;
+
+    market.innerHTML += `
       <div class="card">
-        <img src="${f.img}">
-        <h3>${f.name}</h3>
-        <p>${f.price} AZN</p>
-        <div class="qty">
-          <button onclick="add('${f.name}',${f.price})">+</button>
-          <button onclick="remove('${f.name}',${f.price})">-</button>
-        </div>
+        <h3>${c.name}</h3>
+        <p>$${price}</p>
+        <button class="buy" onclick="buy('${c.name}', ${price})">Al</button>
+        <button class="sell" onclick="sell('${c.name}', ${price})">Sat</button>
       </div>
     `;
   });
 }
 
-function add(name, price){
-  if(!cart[name]) cart[name]={qty:0,price};
-  cart[name].qty++;
-  updateCart();
-}
-
-function remove(name){
-  if(cart[name]){
-    cart[name].qty--;
-    if(cart[name].qty<=0) delete cart[name];
+function buy(name, price){
+  if(balance >= price){
+    balance -= price;
+    alert(name + " alındı");
+  } else {
+    alert("Balans azdır");
   }
-  updateCart();
+  updateBalance();
 }
 
-function updateCart(){
-  let list="";
-  let total=0;
-  let count=0;
-
-  for(let item in cart){
-    let q=cart[item].qty;
-    let p=cart[item].price;
-    total+=q*p;
-    count+=q;
-    list+=`${item} x${q}<br>`;
-  }
-
-  document.getElementById("cartList").innerHTML=list;
-  document.getElementById("total").innerText=total;
-  document.getElementById("count").innerText=count;
+function sell(name, price){
+  balance += price;
+  alert(name + " satıldı");
+  updateBalance();
 }
 
-function sendOrder(){
-  let text="Salam, sifariş:\n";
-  for(let item in cart){
-    text+=item+" x"+cart[item].qty+"\n";
-  }
-  text+="Total: "+document.getElementById("total").innerText+" AZN";
-
-  window.open("https://wa.me/994500000000?text="+encodeURIComponent(text));
+function updateBalance(){
+  document.getElementById("balance").innerText = balance.toFixed(2);
 }
 
-renderMenu();
+loadPrices();
 </script>
 
 </body>
