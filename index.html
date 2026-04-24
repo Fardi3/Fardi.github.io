@@ -1,169 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Shamkir Koin</title>
+  <title>DJEVA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body { margin:0; font-family:Arial; background:#0f172a; color:white; }
-    nav { background:#020617; padding:15px; text-align:center; font-size:22px; }
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter&display=swap" rel="stylesheet">
 
-    .container { padding:20px; }
+  <style>
+    body {
+      margin:0;
+      font-family:'Inter', sans-serif;
+      background:white;
+      color:black;
+    }
+
+    nav {
+      display:flex;
+      justify-content:space-between;
+      padding:20px;
+      border-bottom:1px solid #eee;
+    }
+
+    nav h1 {
+      font-family:'Playfair Display';
+      letter-spacing:3px;
+    }
+
+    .hero {
+      height:80vh;
+      background:url('img1.jpg') center/cover;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-size:40px;
+      font-family:'Playfair Display';
+    }
 
     .grid {
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:15px;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+      padding:40px;
     }
 
     .card {
-      background:#1e293b;
-      padding:15px;
-      border-radius:12px;
       text-align:center;
     }
 
-    .up { color:#22c55e; }
-    .down { color:#ef4444; }
-
-    button {
-      margin:5px;
-      padding:8px 12px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
+    .card img {
+      width:100%;
+      height:350px;
+      object-fit:cover;
     }
 
-    .buy { background:green; color:white; }
-    .sell { background:red; color:white; }
+    .card h3 {
+      margin:10px 0 5px;
+      font-weight:500;
+    }
 
-    #payBox {
-      display:none;
-      position:fixed;
-      top:30%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      background:#1e293b;
-      padding:20px;
-      border-radius:10px;
+    button {
+      border:1px solid black;
+      background:none;
+      padding:8px 15px;
+      cursor:pointer;
+      margin-top:10px;
+    }
+
+    button:hover {
+      background:black;
+      color:white;
+    }
+
+    footer {
+      text-align:center;
+      padding:30px;
+      border-top:1px solid #eee;
+      font-size:14px;
     }
   </style>
 </head>
 
 <body>
 
-<nav>💰 Shamkir Koin</nav>
+<nav>
+  <h1>DJEVA</h1>
+  <div>@djevastudio</div>
+</nav>
 
-<div class="container">
-
-  <h2>📊 Market</h2>
-  <div class="grid" id="market"></div>
-
-  <h2>📈 Chart</h2>
-  <iframe 
-    src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=30&theme=dark"
-    width="100%" height="400">
-  </iframe>
-
-  <h2>💼 Portfolio</h2>
-  <div class="card" id="portfolio"></div>
-
-  <button onclick="openPayment()">💳 Balans artır</button>
-
+<div class="hero">
+  NEW COLLECTION
 </div>
 
-<!-- PAYMENT BOX -->
-<div id="payBox">
-  <h3>Balans artır</h3>
-  <p>+10 USDT</p>
-  <button onclick="confirmPay()">Ödə</button>
-</div>
+<div class="grid" id="products"></div>
+
+<footer>
+  Instagram: @djevastudio
+</footer>
 
 <script>
-let balance = 1000;
-let portfolio = {};
-let lastPrices = {};
-
-const coins = [
-  {name:"Bitcoin", id:"bitcoin"},
-  {name:"Ethereum", id:"ethereum"},
-  {name:"BNB", id:"binancecoin"},
-  {name:"Solana", id:"solana"},
-  {name:"XRP", id:"ripple"}
+let items = [
+  {name:"Look 1", price:40, img:"img1.jpg"},
+  {name:"Look 2", price:50, img:"img2.jpg"},
+  {name:"Look 3", price:60, img:"img3.jpg"}
 ];
 
-async function loadPrices(){
-  let res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple&vs_currencies=usd");
-  let data = await res.json();
-
-  let market = document.getElementById("market");
-  market.innerHTML = "";
-
-  coins.forEach(c => {
-    let price = data[c.id].usd;
-    let old = lastPrices[c.id];
-
-    let trend="", cls="";
-    if(old){
-      if(price>old){ trend="▲"; cls="up"; }
-      else if(price<old){ trend="▼"; cls="down"; }
-    }
-
-    lastPrices[c.id] = price;
-
-    market.innerHTML += `
+function render(){
+  let html="";
+  items.forEach(i=>{
+    html+=`
       <div class="card">
-        <h3>${c.name}</h3>
-        <p class="${cls}">$${price} ${trend}</p>
-        <button class="buy" onclick="buy('${c.name}',${price})">Al</button>
-        <button class="sell" onclick="sell('${c.name}',${price})">Sat</button>
+        <img src="${i.img}">
+        <h3>${i.name}</h3>
+        <p>${i.price} AZN</p>
+        <button onclick="order('${i.name}',${i.price})">Order</button>
       </div>
     `;
   });
+  document.getElementById("products").innerHTML=html;
 }
 
-function buy(name, price){
-  if(balance >= price){
-    balance -= price;
-    if(!portfolio[name]) portfolio[name]=0;
-    portfolio[name]++;
-  } else {
-    alert("Balans azdır");
-  }
-  updatePortfolio();
+function order(name,price){
+  let text = "Salam, DJEVA məhsulu sifariş etmək istəyirəm: " + name + " - " + price + " AZN";
+  window.open("https://wa.me/994XXXXXXXXX?text="+encodeURIComponent(text));
 }
 
-function sell(name, price){
-  if(portfolio[name]){
-    portfolio[name]--;
-    balance += price;
-    if(portfolio[name]<=0) delete portfolio[name];
-  }
-  updatePortfolio();
-}
-
-function updatePortfolio(){
-  let html = "Balance: " + balance.toFixed(2) + " USDT<br><br>";
-  for(let c in portfolio){
-    html += c + ": " + portfolio[c] + "<br>";
-  }
-  document.getElementById("portfolio").innerHTML = html;
-}
-
-function openPayment(){
-  document.getElementById("payBox").style.display = "block";
-}
-
-function confirmPay(){
-  balance += 10;
-  updatePortfolio();
-  alert("Ödəniş uğurlu ✅");
-  document.getElementById("payBox").style.display = "none";
-}
-
-loadPrices();
-setInterval(loadPrices, 5000);
-updatePortfolio();
+render();
 </script>
 
 </body>
